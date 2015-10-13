@@ -12,7 +12,7 @@ public class PlayerData
     private string filePath =  "player.dat";
 
     private List<int> highScores = new List<int>(MAX_TOP_SCORES); // Highest scores
-    private List<int> scoreHistory = new List<int>(MAX_SCORE_HISTORY; // Score from last few games
+    private List<int> scoreHistory = new List<int>(MAX_SCORE_HISTORY); // Score from last few games
 
     public List<int> getHighScores()
     {
