@@ -5,12 +5,24 @@ using System.Collections.Generic;
 // Have an instance of this in the game manager
 public class PlayerData
 {
-    private const int MAX_SCORE_HISTORY = 5;
     private const int MAX_TOP_SCORES = 5;
+    private const int MAX_SCORE_HISTORY = 5;
+
+    [SerializeField]
     private string filePath =  "player.dat";
 
-    private List<int> highScores = new List<int>(); // Highest scores
-    private List<int> scoreHistory = new List<int>(); // Score from last few games
+    private List<int> highScores = new List<int>(MAX_TOP_SCORES); // Highest scores
+    private List<int> scoreHistory = new List<int>(MAX_SCORE_HISTORY); // Score from last few games
+
+    public List<int> getHighScores()
+    {
+        return highScores;
+    }
+
+    public List<int> getScoreHistory()
+    {
+        return scoreHistory;
+    }
 
     /// <summary>
     /// Serializes the current state of this object from filePath
@@ -65,18 +77,29 @@ public class PlayerData
     /// Called when the player eventually loses their game.
     /// Registers the score with the player data structure making sure it's saved.
     /// </summary>
-    public void RegisterScore(int score)
+    public void RegisterNewScore(int score)
+    {
+        UpdateHighScores(score);
+        UpdateScoreHistory(score);
+    }
+
+    private void UpdateHighScores(int score)
     {
         scoreHistory.Add(score);
 
+        if (scoreHistory.Count > MAX_SCORE_HISTORY)
+            scoreHistory.RemoveAt(scoreHistory.Count - 1);
+    }
+
+    private void UpdateScoreHistory(int score)
+    {
         if (highScores.Count > 0)
         {
-            for(int i = 0; i < highScores.Count; ++i)
+            for (int i = 0; i < highScores.Count; ++i)
             {
                 if (score > i)
                     highScores.Insert(i, score);
             }
         }
     }
-
 }
