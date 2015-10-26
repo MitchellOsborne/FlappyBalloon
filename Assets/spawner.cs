@@ -8,9 +8,9 @@ public class spawner : MonoBehaviour
 	public float MinSpawnInterval = 0.1f;	//Minimum/Shortest Spawn Time
 	public float CurrSpawnTime = 1;			//Current Spawn Time
 	public float SpawnTimerDecayRate = 1;	//Rate at which Current Spawn Time shortens (* 1/second)
-	public bool RandomSpawnTime = false;	//Whether the Spawn time is randomly chosen between Max and Min
-	private float SpawnTimer = 0;
-	private float RandTimer = 0;
+	public bool RandomSpawnTime = false;    //Whether the Spawn time is randomly chosen between Max and Min
+    protected float SpawnTimer = 0;
+	protected float RandTimer = 0;
 	// Use this for initialization
 	void Start ()
 	{
@@ -18,11 +18,10 @@ public class spawner : MonoBehaviour
 		CurrSpawnTime = MaxSpawnInterval;
 		if (RandomSpawnTime)
 			RandTimer = Random.Range (MinSpawnInterval, MaxSpawnInterval);
-
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	public virtual void Update () 
 	{
 		SpawnTimer += Time.deltaTime;
 
