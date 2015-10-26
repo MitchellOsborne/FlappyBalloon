@@ -14,4 +14,14 @@ public class PlayerInfo : MonoBehaviour
     {
         return health < 0;
     }
+
+    void OnColliderEnter2D(Collider2D collider)
+    {
+        //TODO: make damage more flexible ie. Different enemy types = different damage amounts
+        string tag = collider.gameObject.tag;
+        if (tag == "Enemy" || tag == "Debris")
+        {
+            health -= 10;
+        }
+    }
 }
