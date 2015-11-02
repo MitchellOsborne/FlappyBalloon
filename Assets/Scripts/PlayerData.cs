@@ -8,16 +8,8 @@ public class PlayerData
     private const int MAX_TOP_SCORES = 5;
     private const int MAX_SCORE_HISTORY = 5;
 
-    [SerializeField]
-    private string filePath;
-
     private List<int> highScores = new List<int>(MAX_TOP_SCORES); // Highest scores
     private List<int> scoreHistory = new List<int>(MAX_SCORE_HISTORY); // Score from last few games
-
-    void Awake()
-    {
-        filePath = Application.dataPath + "player.dat";
-    }
 
     public List<int> getHighScores()
     {
@@ -53,7 +45,7 @@ public class PlayerData
         json.Add("scoreHistory", sHistory);
 
         Debug.Log(json.ToString());
-        json.SaveToFile(filePath);
+        json.SaveToFile(Application.dataPath + "/player.dat");
     }
 
     /// <summary>
@@ -61,23 +53,31 @@ public class PlayerData
     /// </summary>
     public bool LoadDataFromDefaultPath()
     {
-        JSONNode json = JSONNode.LoadFromFile(filePath);
+        try
+        {
+            JSONNode json = JSONNode.LoadFromFile(Application.dataPath + "/player.dat");
 
-        if (json == null)
+            if (json == null)
+                return false;
+
+            for (int i = 0; i < json["highScores"].Count; ++i)
+            {
+                highScores.Add(json["highScores"][i].AsInt);
+            }
+
+            for (int i = 0; i < json["scoreHistory"].Count; ++i)
+            {
+                scoreHistory.Add(json["scoreHistory"][i].AsInt);
+            }
+
+            Debug.Log(json.ToString());
+            return true;
+        }
+        catch(System.IO.FileNotFoundException e)
+        {
+            Debug.Log(e.Message);
             return false;
-
-        for (int i = 0; i < json["highScores"].Count; ++i)
-        {
-            highScores.Add(json["highScores"][i].AsInt);
         }
-
-        for (int i = 0; i < json["scoreHistory"].Count; ++i)
-        {
-            highScores.Add(json["scoreHistory"][i].AsInt);
-        }
-
-        Debug.Log(json.ToString());
-        return true;
     }
 
     /// <summary>
@@ -95,9 +95,9 @@ public class PlayerData
         highScores.Add(score);
         highScores.Sort();
 
-        for (int i = highScores.Count; i > MAX_TOP_SCORES; --i)
+        if(highScores.Count > MAX_TOP_SCORES)
         {
-            highScores.RemoveAt(i);
+            highScores.RemoveRange(MAX_TOP_SCORES - 1, highScores.Count - MAX_TOP_SCORES);
         }
     }
 
@@ -105,9 +105,9 @@ public class PlayerData
     {
         scoreHistory.Add(score);
 
-        for (int i = scoreHistory.Count; i > MAX_SCORE_HISTORY; --i)
+        if (scoreHistory.Count > MAX_SCORE_HISTORY)
         {
-            scoreHistory.RemoveAt(i);
+            scoreHistory.RemoveRange(MAX_SCORE_HISTORY - 1, scoreHistory.Count - MAX_SCORE_HISTORY);
         }
     }
 }
