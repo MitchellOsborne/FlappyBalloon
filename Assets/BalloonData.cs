@@ -8,11 +8,16 @@ public class BalloonData : MonoBehaviour {
 	public Text hpText;
 	public GameManager gm;
 	public SpriteRenderer sr;
+	public GameObject GameOverScreen;
 	private float flashTime = 0.1f;
 	private float flashCounter = 0.1f;
 	
 	public void Update()
 	{
+		if (IsDead()) {
+			GameOverScreen.SetActive(true);
+		}
+
 		if (flashCounter < flashTime) {
 			flashCounter += Time.deltaTime;
 			sr.color = Color.red;
@@ -24,6 +29,7 @@ public class BalloonData : MonoBehaviour {
 			health = 0;
 		}
 		hpText.text = health.ToString ();
+
 	}
 	public void Damage(int amount)
 	{
