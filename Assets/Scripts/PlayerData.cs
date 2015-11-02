@@ -9,10 +9,15 @@ public class PlayerData
     private const int MAX_SCORE_HISTORY = 5;
 
     [SerializeField]
-    private string filePath =  "player.dat";
+    private string filePath;
 
     private List<int> highScores = new List<int>(MAX_TOP_SCORES); // Highest scores
     private List<int> scoreHistory = new List<int>(MAX_SCORE_HISTORY); // Score from last few games
+
+    void Awake()
+    {
+        filePath = Application.dataPath + "player.dat";
+    }
 
     public List<int> getHighScores()
     {
@@ -32,7 +37,7 @@ public class PlayerData
         JSONClass json = new JSONClass();
 
         // Saving high scores
-        JSONClass hScores = new JSONClass();
+        JSONArray hScores = new JSONArray();
         for (int i = 0; i < highScores.Count; ++i)
         {
             hScores[i] = highScores[i].ToString();
@@ -40,13 +45,14 @@ public class PlayerData
         json.Add("highScores", hScores);
 
         // Saving score history
-        JSONClass sHistory = new JSONClass();
+        JSONArray sHistory = new JSONArray();
         for (int i = 0; i < scoreHistory.Count; ++i)
         {
-            sHistory["scoreHistory" + i] = scoreHistory[i].ToString();
+            sHistory[i] = scoreHistory[i].ToString();
         }
         json.Add("scoreHistory", sHistory);
 
+        Debug.Log(json.ToString());
         json.SaveToFile(filePath);
     }
 
@@ -70,6 +76,7 @@ public class PlayerData
             highScores.Add(json["scoreHistory"][i].AsInt);
         }
 
+        Debug.Log(json.ToString());
         return true;
     }
 
@@ -85,21 +92,22 @@ public class PlayerData
 
     private void UpdateHighScores(int score)
     {
-        scoreHistory.Add(score);
+        highScores.Add(score);
+        highScores.Sort();
 
-        if (scoreHistory.Count > MAX_SCORE_HISTORY)
-            scoreHistory.RemoveAt(scoreHistory.Count - 1);
+        for (int i = highScores.Count; i > MAX_TOP_SCORES; --i)
+        {
+            highScores.RemoveAt(i);
+        }
     }
 
     private void UpdateScoreHistory(int score)
     {
-        if (highScores.Count > 0)
+        scoreHistory.Add(score);
+
+        for (int i = scoreHistory.Count; i > MAX_SCORE_HISTORY; --i)
         {
-            for (int i = 0; i < highScores.Count; ++i)
-            {
-                if (score > i)
-                    highScores.Insert(i, score);
-            }
+            scoreHistory.RemoveAt(i);
         }
     }
 }
