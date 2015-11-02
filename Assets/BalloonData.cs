@@ -5,13 +5,18 @@ using UnityEngine.UI;
 public class BalloonData : MonoBehaviour {
 
 	public int health = 100;
-	public Text hpText;
+	public Slider hpSlider;
 	public GameManager gm;
 	public SpriteRenderer sr;
 	public GameObject GameOverScreen;
 	private float flashTime = 0.1f;
 	private float flashCounter = 0.1f;
 	
+    void Start()
+    {
+        hpSlider.value = health;
+    }
+
 	public void Update()
 	{
 		if (IsDead()) {
@@ -28,7 +33,7 @@ public class BalloonData : MonoBehaviour {
 		if (health < 0) {
 			health = 0;
 		}
-		hpText.text = health.ToString ();
+		hpSlider.value = health;
 
 	}
 	public void Damage(int amount)

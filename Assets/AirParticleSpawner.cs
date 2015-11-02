@@ -12,8 +12,6 @@ public class AirParticleSpawner : spawner
         particleContainer = new GameObject("ParticleContainer");
         particleContainer.transform.parent = gameObject.transform;
 
-        int starterParticle = (int)Random.Range(0, particleArray.Length);
-
         for (int i = 0; i < particleArray.Length; ++i)
         {
             particleArray[i] = GameObject.Instantiate(SpawnObject, Vector2.zero, Quaternion.identity) as GameObject;
