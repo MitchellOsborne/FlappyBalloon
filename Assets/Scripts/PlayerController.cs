@@ -14,14 +14,25 @@ public class PlayerController : MonoBehaviour
     {
 	    if(hasControl)
         {
-			Vector2 f = new Vector2(
-				Input.GetAxis ("Horizontal") * force * Time.deltaTime, 
-				Input.GetAxis ("Vertical") * force * Time.deltaTime);
+        #if UNITY_STANDALONE
+                    Vector2 f = new Vector2(
+        				Input.GetAxis ("Horizontal") * force * Time.deltaTime, 
+        				Input.GetAxis ("Vertical") * force * Time.deltaTime);
+        
+        			balloonRB.AddForce(f, forceMode);
+        #endif
 
-			balloonRB.AddForce(f, forceMode);
+        #if UNITY_ANDROID || UNITY_IOS
+                    Vector2 f = Vector2.zero;
+        
+                    if(Input.touchCount > 0)
+                        f = Input.GetTouch(0).deltaPosition;
+        
+        			balloonRB.AddForce(f, forceMode);
+        #endif
 
         }
-	}
+    }
 
     void SetHasControl(bool newVal)
     {
