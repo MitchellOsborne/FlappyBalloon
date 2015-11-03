@@ -26,58 +26,92 @@ public class PlayerData
     /// </summary>
     public void SaveDataToDefaultPath()
     {
-        JSONClass json = new JSONClass();
+        string highScoresStr = "";
+        string pastScoresStr = "";
 
-        // Saving high scores
-        JSONArray hScores = new JSONArray();
-        for (int i = 0; i < highScores.Count; ++i)
+        for(int i = 0; i <  highScores.Count; ++i)
         {
-            hScores[i] = highScores[i].ToString();
+            highScoresStr += (highScores[i].ToString() + ":");
         }
-        json.Add("highScores", hScores);
 
-        // Saving score history
-        JSONArray sHistory = new JSONArray();
         for (int i = 0; i < scoreHistory.Count; ++i)
         {
-            sHistory[i] = scoreHistory[i].ToString();
+            pastScoresStr += (scoreHistory[i].ToString() + ":");
         }
-        json.Add("scoreHistory", sHistory);
 
-        Debug.Log(json.ToString());
-        json.SaveToFile(Application.dataPath + "/player.dat");
+        PlayerPrefs.SetString("highScores", highScoresStr);
+        PlayerPrefs.SetString("pastScores", pastScoresStr);
+
+        //JSONClass json = new JSONClass();
+        //
+        //// Saving high scores
+        //JSONArray hScores = new JSONArray();
+        //for (int i = 0; i < highScores.Count; ++i)
+        //{
+        //    hScores[i] = highScores[i].ToString();
+        //}
+        //json.Add("highScores", hScores);
+        //
+        //// Saving score history
+        //JSONArray sHistory = new JSONArray();
+        //for (int i = 0; i < scoreHistory.Count; ++i)
+        //{
+        //    sHistory[i] = scoreHistory[i].ToString();
+        //}
+        //json.Add("scoreHistory", sHistory);
+        //
+        //Debug.Log(json.ToString());
+        //json.SaveToFile(Application.persistentDataPath + "\\player.dat");
     }
 
     /// <summary>
     /// Loads serialized player data from filePath
     /// </summary>
-    public bool LoadDataFromDefaultPath()
+    public void LoadDataFromDefaultPath()
     {
-        try
+        if(PlayerPrefs.GetString("highScores") != "" && PlayerPrefs.GetString("pastScores") != "")
         {
-            JSONNode json = JSONNode.LoadFromFile(Application.dataPath + "/player.dat");
+            string[] highScoresStr = PlayerPrefs.GetString("highScores").Split(':');
+            string[] pastScoresStr = PlayerPrefs.GetString("pastScores").Split(':');
 
-            if (json == null)
-                return false;
-
-            for (int i = 0; i < json["highScores"].Count; ++i)
+            for (int i = 0; i < highScoresStr.Length; ++i)
             {
-                highScores.Add(json["highScores"][i].AsInt);
+                if(highScoresStr[i] != "")
+                    highScores.Add(int.Parse(highScoresStr[i]));
             }
 
-            for (int i = 0; i < json["scoreHistory"].Count; ++i)
+            for (int i = 0; i < pastScoresStr.Length; ++i)
             {
-                scoreHistory.Add(json["scoreHistory"][i].AsInt);
+                if (pastScoresStr[i] != "")
+                    scoreHistory.Add(int.Parse(pastScoresStr[i]));
             }
+        }
 
-            Debug.Log(json.ToString());
-            return true;
-        }
-        catch(System.IO.FileNotFoundException e)
-        {
-            Debug.Log(e.Message);
-            return false;
-        }
+        //try
+        //{
+        //    JSONNode json = JSONNode.LoadFromFile(Application.persistentDataPath + "\\player.dat");
+        //
+        //    if (json == null)
+        //        return false;
+        //
+        //    for (int i = 0; i < json["highScores"].Count; ++i)
+        //    {
+        //        highScores.Add(json["highScores"][i].AsInt);
+        //    }
+        //
+        //    for (int i = 0; i < json["scoreHistory"].Count; ++i)
+        //    {
+        //        scoreHistory.Add(json["scoreHistory"][i].AsInt);
+        //    }
+        //
+        //    Debug.Log(json.ToString());
+        //    return true;
+        //}
+        //catch(System.IO.FileNotFoundException e)
+        //{
+        //    Debug.Log(e.Message);
+        //    return false;
+        //}
     }
 
     /// <summary>

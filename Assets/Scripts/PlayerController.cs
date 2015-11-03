@@ -14,22 +14,31 @@ public class PlayerController : MonoBehaviour
     {
 	    if(hasControl)
         {
-        #if UNITY_STANDALONE
+            #if UNITY_EDITOR
                     Vector2 f = new Vector2(
         				Input.GetAxis ("Horizontal") * force * Time.deltaTime, 
         				Input.GetAxis ("Vertical") * force * Time.deltaTime);
         
         			balloonRB.AddForce(f, forceMode);
-        #endif
+                    return;
+            #endif
 
-        #if UNITY_ANDROID || UNITY_IOS
-                    Vector2 f = Vector2.zero;
-        
-                    if(Input.touchCount > 0)
-                        f = Input.GetTouch(0).deltaPosition;
+            #if UNITY_STANDALONE
+                    Vector2 f = new Vector2(
+        				Input.GetAxis ("Horizontal") * force * Time.deltaTime, 
+        				Input.GetAxis ("Vertical") * force * Time.deltaTime);
         
         			balloonRB.AddForce(f, forceMode);
-        #endif
+            #endif
+
+            #if UNITY_ANDROID || UNITY_IOS
+                Vector2 v = Vector2.zero;
+        
+                if(Input.touchCount > 0)
+                    v = Input.GetTouch(0).deltaPosition * 3;
+        
+                balloonRB.AddForce(v, forceMode);
+            #endif
 
         }
     }

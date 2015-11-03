@@ -10,13 +10,15 @@ public class GameOver : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Time.timeScale = 0;
-		pd.LoadDataFromDefaultPath ();
+
+        PlayerScore.text = gm.Score.ToString();
+
+        pd.LoadDataFromDefaultPath ();
 		pd.RegisterNewScore (gm.Score);
 		pd.SaveDataToDefaultPath ();
 
 		Scores = pd.getHighScores ();
 		Scores.Sort ();
-		PlayerScore.text = gm.Score.ToString ();
 		for (int i = 0; i < Scores.Count; ++i) {
 			Top5[i].text = Scores[i].ToString ();
 		}
